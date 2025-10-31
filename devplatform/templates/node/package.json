@@ -1,0 +1,12 @@
+{
+  "name": "template-node-service",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node app/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
