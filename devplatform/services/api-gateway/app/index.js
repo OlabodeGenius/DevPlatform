@@ -1,11 +1,16 @@
 import express from 'express';
+import { ok, log } from '@devplatform/common';
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/healthz', (req, res) => {
-  res.status(200).json({ status: 'ok', ts: new Date().toISOString() });
+  return ok(res, { status: 'healthy', service: 'api-gateway' });
 });
 
-app.get('/health', (req, res) => res.send('DevPlatform template service'));
+app.get('/', (req, res) => {
+  return ok(res, { message: 'DevPlatform api-gateway service' });
+});
 
-app.listen(port, () => console.log(`service listening on :${port}`));
+app.listen(port, () => log(`api-gateway listening on :${port}`));
+

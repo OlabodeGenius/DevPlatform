@@ -1,14 +1,27 @@
 # syntax=docker/dockerfile:1
+
 FROM node:20-alpine
+
+# We'll mirror the repo structure under /app:
+# /app/services/orders-api
+# /app/packages/common
+
 WORKDIR /app
 
-# Copy manifest first for better Docker layer caching
-COPY package.json .
-# Use npm ci if a lockfile exists; otherwise fall back to npm i
+# 1) Copy the service's package files
+COPY services/orders-api/package*.json ./services/orders-api/
+
+# 2) Copy the shared common package so that "file:../../packages/common"
+#    in package.json can be resolved.
+COPY packages/common ./packages/common
+
+# 3) Install dependencies for the service
+WORKDIR /app/services/orders-api
 RUN npm ci || npm i --omit=dev
 
-# Copy source
-COPY app ./app
+# 4) Copy the service source code
+COPY services/orders-api/app ./app
 
-EXPOSE 3000
-CMD ["npm","start"]
+# 5) Start the service
+CMD ["npm", "start"]
+
