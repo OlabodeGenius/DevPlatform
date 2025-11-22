@@ -1,0 +1,17 @@
+{
+  "name": "orders-api",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node app/index.js",
+    "test": "node --test tests/**/*.test.js",
+    "lint": "node ./node_modules/eslint/bin/eslint.js ."
+  },
+  "dependencies": {
+    "@devplatform/common": "file:../../packages/common",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
