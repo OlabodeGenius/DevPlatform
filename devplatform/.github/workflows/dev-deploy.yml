@@ -1,0 +1,44 @@
+name: dev-deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'k8s/**'
+      - 'services/**'
+      - '.github/workflows/dev-deploy.yml'
+
+jobs:
+  deploy-to-dev:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl context
+        run: |
+          kubectl config use-context docker-desktop
+          kubectl get nodes
+          kubectl -n kube-system get pods
+
+      - name: Ensure dev namespace exists
+        run: |
+          kubectl create namespace dev 2>/dev/null || true
+          kubectl get ns
+
+      - name: Apply manifests to dev namespace
+        run: |
+          kubectl -n dev apply -f k8s/
+          kubectl -n dev get pods
+          kubectl -n dev get svc
+
+      - name: Smoke test api-gateway /healthz from inside the cluster
+        run: |
+          kubectl -n dev run curl-tester --image=ghcr.io/curl/curl:latest --restart=Never -- \
+            sh -c "curl -s -o /dev/null -w '%{http_code}\n' http://api-gateway/healthz || exit 1"
+
+          kubectl -n dev logs curl-tester || true
+
+          kubectl -n dev delete pod curl-tester --ignore-not-found=true
