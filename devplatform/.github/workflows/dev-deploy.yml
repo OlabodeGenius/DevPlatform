@@ -28,11 +28,17 @@ jobs:
           kubectl create namespace dev 2>/dev/null || true
           kubectl get ns
 
-      - name: Apply manifests to dev namespace
+      - name: Apply Kubernetes manifests to dev namespace
         run: |
           kubectl -n dev apply -f k8s/
           kubectl -n dev get pods
           kubectl -n dev get svc
+
+      - name: Restart deployments (api-gateway, orders-api, payments-api)
+        run: |
+          kubectl -n dev rollout restart deployment/api-gateway
+          kubectl -n dev rollout restart deployment/orders-api
+          kubectl -n dev rollout restart deployment/payments-api
 
       - name: Smoke test api-gateway /healthz from inside the cluster
         run: |
@@ -42,3 +48,4 @@ jobs:
           kubectl -n dev logs curl-tester || true
 
           kubectl -n dev delete pod curl-tester --ignore-not-found=true
+
