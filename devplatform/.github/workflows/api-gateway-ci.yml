@@ -62,3 +62,12 @@ jobs:
             -t devplatform-${{ matrix.service }}:${{ github.sha }} \
             .
 
+      - name: Scan Docker image for vulnerabilities (Trivy)
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            --exit-code 1 \
+            --severity CRITICAL,HIGH \
+            --no-progress \
+            devplatform-${{ matrix.service }}:${{ github.sha }}
