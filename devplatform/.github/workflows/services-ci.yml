@@ -90,6 +90,9 @@ jobs:
           OWNER_LC="${OWNER_LC,,}"
           echo "IMAGE=ghcr.io/${OWNER_LC}/${{ matrix.service }}" >> "$GITHUB_ENV"
 
+      - name: Echo image name for debugging
+        run: echo "Image name: ${{ env.IMAGE }}"
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
