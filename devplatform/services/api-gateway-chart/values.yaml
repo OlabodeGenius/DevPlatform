@@ -1,0 +1,13 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/${{ github.repository_owner }}/api-gateway
+  tag: latest
+service:
+  port: 80
+  targetPort: 3000
+ingress:
+  enabled: true
+  annotations: {}
+  hosts:
+    - host: "api-gateway.local"
+      paths: ["/"]
