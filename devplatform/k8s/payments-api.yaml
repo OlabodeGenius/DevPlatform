@@ -16,12 +16,24 @@ spec:
       containers:
         - name: payments-api
           image: payments-api:local
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 3000
           env:
             - name: PORT
               value: "3000"
+
+            # API keys from secret
+            - name: PAYMENT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-keys
+                  key: PAYMENT_API_KEY
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: api-keys
+                  key: JWT_SECRET
 ---
 apiVersion: v1
 kind: Service
@@ -34,5 +46,5 @@ spec:
   ports:
     - port: 80
       targetPort: 3000
-      protocol: TCP
-  type: ClusterIP
+      nodePort: 30082
+  type: NodePort

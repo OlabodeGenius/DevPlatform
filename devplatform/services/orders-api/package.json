@@ -8,7 +8,6 @@
     "lint": "node ./node_modules/eslint/bin/eslint.js ."
   },
   "dependencies": {
-    "@devplatform/common": "file:../../packages/common",
     "express": "^4.19.2"
   },
   "devDependencies": {
